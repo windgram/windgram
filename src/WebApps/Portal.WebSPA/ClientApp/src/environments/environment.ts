@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   stsAuthority: 'https://localhost:44350',
   clientId: 'portal_spa_client',
-  clientRoot: 'http://localhost:4200/',
+  clientRoot: 'http://localhost:4200',
   clientScope: 'openid profile filesystem message user',
 };
 

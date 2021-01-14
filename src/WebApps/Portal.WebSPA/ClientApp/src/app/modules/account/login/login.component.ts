@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from 'src/app/core/services/auth.service';
 import { UserService } from 'src/app/core/services/user.service';
 import { AccountService } from '../shared/account.service';
 
@@ -17,7 +18,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private accountService: AccountService,
-    private userService: UserService
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
@@ -39,9 +40,9 @@ export class LoginComponent implements OnInit {
     this.accountService.login(this.form.value)
       .toPromise()
       .then(res => {
-        this.router.navigate(['/'])
-          .then(() => {
-            this.userService.loadUser();
+        this.authService.login()
+          .then(user => {
+            console.log(user);
           });
       })
       .finally(() => {

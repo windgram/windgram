@@ -11,16 +11,20 @@ export class AuthInterceptor implements HttpInterceptor {
         private authService: AuthService
     ) { }
 
-    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const tokenSource = from(this.authService.getUser());
         return tokenSource.pipe(
             switchMap((user => {
-                const authRequest = request.clone({
-                    setHeaders: {
-                        Authorization: `${user.token_type} ${user.access_token}`
-                    }
-                });
-                return next.handle(authRequest);
+                console.log(user);
+                let request = req;
+                if (user) {
+                    request = request.clone({
+                        setHeaders: {
+                            Authorization: `${user.token_type} ${user.access_token}`
+                        }
+                    });
+                }
+                return next.handle(request);
             }))
         ).pipe(
             tap(

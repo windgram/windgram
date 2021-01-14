@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 import { UserProfileViewModel, UserProfileDto } from '../models/user-profile.model';
 import { StorageService } from './storage.service';
 
-const USER_URL = `${environment.stsAuthority}/api/user`;
+const USER_URL = `http://localhost:5501/api/profile`;
 @Injectable()
 export class UserService {
   private userLoadedSource = new Subject<UserProfileViewModel>();
