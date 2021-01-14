@@ -1,0 +1,65 @@
+<nz-header>
+  <nz-row nzJustify="center">
+    <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="21" [nzLg]="19" [nzXl]="17" [nzXXl]="15">
+      <nav>
+        <div>
+          <div class="logo">
+            <a href="/">
+              <img src="/assets/images/logo.jpg">
+            </a>
+          </div>
+          <!-- <div class="float-left pl-1">
+            <input nz-input type="text" style="min-width: 20rem;" placeholder="Search">
+          </div> -->
+        </div>
+        <ul nz-menu nzMode="horizontal">
+          <ng-container *ngIf="!profile">
+            <li nz-menu-item [routerLink]="['/account/login']" nzMatchRouter="true">
+              登录
+            </li>
+            <li nz-menu-item [routerLink]="['/account/login']" nzMatchRouter="true">
+              注册
+            </li>
+          </ng-container>
+          <ng-container *ngIf="profile">
+            <li nz-menu-item [routerLink]="['/posts','new']">
+              <i style="font-size:x-large;vertical-align: middle;" nz-icon nzType="edit" nzTheme="outline"></i>
+            </li>
+            <li nz-menu-item nzMatchRouter [routerLink]="['/notifications']">
+              <i style="font-size:x-large;vertical-align: middle;" nz-icon nzType="bell" nzTheme="outline"></i>
+            </li>
+            <li nz-submenu [nzTitle]="avatar">
+              <ng-template #avatar>
+                <ng-container *ngIf="profile.picture; else noPictureTemplate">
+                  <nz-avatar [nzSrc]="profile.picture" [nzSize]="'default'"></nz-avatar>
+                </ng-container>
+                <ng-template #noPictureTemplate>
+                  {{ profile.nickName ? profile.nickName : profile.userName }}
+                </ng-template>
+              </ng-template>
+              <ul>
+                <li nz-menu-item [routerLink]="['/settings']">
+                  Your Profile
+                </li>
+                <li nz-menu-divider></li>
+                <li nz-menu-item [routerLink]="['/posts','new']">
+                  Write a post
+                </li>
+                <li nz-menu-item [routerLink]="['/posts','new']">
+                  Your stars
+                </li>
+                <li nz-menu-item [routerLink]="['/settings']">
+                  Settings
+                </li>
+                <li nz-menu-divider></li>
+                <li nz-menu-item (click)="logout()">
+                  Sign out
+                </li>
+              </ul>
+            </li>
+          </ng-container>
+        </ul>
+      </nav>
+    </nz-col>
+  </nz-row>
+</nz-header>

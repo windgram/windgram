@@ -11,9 +11,9 @@ namespace Windgram.Identity.STS.Configurations
         {
             return new List<ApiScope>
             {
-                new ApiScope("identity.api", "Identity Service"),
-                new ApiScope("filesystem.api", "FileSystem Service"),
-                new ApiScope("emailing.api", "Emailing Service"),
+                new ApiScope("filesystem", "FileSystem Service"),
+                new ApiScope("message", "Message Service"),
+                new ApiScope("user", "User Service"),
             };
         }
 
@@ -46,8 +46,9 @@ namespace Windgram.Identity.STS.Configurations
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
-                        "identity.api",
-                        "filesystem.api"
+                        "filesystem",
+                        "message",
+                        "user"
                     },
                 }
             };

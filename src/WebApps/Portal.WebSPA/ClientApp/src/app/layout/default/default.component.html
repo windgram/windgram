@@ -1,0 +1,26 @@
+<nz-layout class="layout">
+  <app-layout-default-header></app-layout-default-header>
+  <nz-content>
+    <nz-row nzJustify="center">
+      <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="21" [nzLg]="19" [nzXl]="17" [nzXXl]="15">
+        <router-outlet></router-outlet>
+      </nz-col>
+    </nz-row>
+  </nz-content>
+  <nz-footer class="footer">
+    <nz-row nzJustify="center">
+      <nz-col [nzXs]="24" [nzSm]="24" [nzMd]="21" [nzLg]="19" [nzXl]="17" [nzXXl]="15">
+        <div class="text-center">
+          Build by <a href="https://dotnet.microsoft.com/" target="_blank">.NET5</a> & <a href="https://angular.io/"
+            target="_blank">Angular 11</a> Run in docker
+        </div>
+        <div class="text-center">
+          Made with <span class="text-danger">❤</span> by leo@xian.dev · Free Forever
+        </div>
+        <div class="text-center">
+          &copy;{{year}} 西岸
+        </div>
+      </nz-col>
+    </nz-row>
+  </nz-footer>
+</nz-layout>

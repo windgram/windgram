@@ -1,0 +1,23 @@
+<form nz-form *ngIf="form" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <nz-form-item>
+    <nz-form-label [nzXs]="24" [nzMd]="6" [nzLg]="5" [nzXl]="4" [nzXXl]="3" nzRequired nzFor="username">邮箱/用户名
+    </nz-form-label>
+    <nz-form-control [nzXs]="24" [nzMd]="12" [nzLg]="10" [nzXl]="8" [nzXXl]="6" [nzErrorTip]="'邮件格式不正确'">
+      <input nz-input type="text" formControlName="username" placeholder="请输入邮箱地址" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzXs]="24" [nzMd]="6" [nzLg]="5" [nzXl]="4" [nzXXl]="3" nzRequired nzFor="name">密码
+    </nz-form-label>
+    <nz-form-control [nzXs]="24" [nzMd]="12" [nzLg]="10" [nzXl]="8" [nzXXl]="6" [nzErrorTip]="'密码长度需为 8 - 16 个字母或数字'">
+      <input nz-input type="password" formControlName="password" placeholder="请输入密码" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-col [nzXs]="24" [nzMd]="6" [nzLg]="5" [nzXl]="4" [nzXXl]="3"></nz-col>
+    <nz-form-control>
+      <button type="submit" nz-button nzType="primary" [nzLoading]="posting"
+        [disabled]="form.invalid || posting">登录</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

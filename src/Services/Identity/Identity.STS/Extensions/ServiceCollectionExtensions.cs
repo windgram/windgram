@@ -79,7 +79,7 @@ namespace Microsoft.Extensions.DependencyInjection
             .AddDefaultTokenProviders();
             services.ConfigureApplicationCookie(o =>
             {
-                o.Cookie.Name = "WindgraIdentity";
+                o.Cookie.Name = "Identity.STS";
                 o.Events = new CookieAuthenticationEvents()
                 {
                     OnRedirectToLogin = ctx =>
