@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Windgram.ApplicationCore.Domain.Entities;
+using Windgram.Identity.ApplicationCore.Domain.Entities;
 
 namespace Windgram.Identity.Web.Services
 {

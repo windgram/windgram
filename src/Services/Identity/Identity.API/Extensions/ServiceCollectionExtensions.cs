@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using Windgram.ApplicationCore.Domain.Entities;
+using Windgram.Identity.ApplicationCore.Domain.Entities;
 using Windgram.Caching.Redis;
 using Windgram.EventBus.RabbitMQ;
 using Windgram.Identity.ApplicationCore;

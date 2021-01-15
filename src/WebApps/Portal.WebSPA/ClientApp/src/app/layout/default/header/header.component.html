@@ -14,7 +14,7 @@
         </div>
         <ul nz-menu nzMode="horizontal">
           <ng-container *ngIf="!profile">
-            <li nz-menu-item [routerLink]="['/account/login']" nzMatchRouter="true">
+            <li nz-menu-item (click)="login()">
               登录
             </li>
             <li nz-menu-item [routerLink]="['/account/login']" nzMatchRouter="true">

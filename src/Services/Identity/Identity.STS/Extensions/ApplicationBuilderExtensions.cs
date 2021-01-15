@@ -19,7 +19,12 @@ namespace Microsoft.AspNetCore.Builder
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseWindgramSwagger(configuration["ApiName"], configuration["ApiVersion"], pathBase);
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
             }
 
             app.Use(async (ctx, next) =>
@@ -28,12 +33,11 @@ namespace Microsoft.AspNetCore.Builder
                 await next();
             });
             app.UseHttpsRedirection();
-
+            app.UseStaticFiles();
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
-
 
             app.UseRouting();
 
@@ -45,7 +49,7 @@ namespace Microsoft.AspNetCore.Builder
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapDefaultControllerRoute();
                 endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions()
                 {
                     Predicate = (check) => check.Tags.Contains("ready"),

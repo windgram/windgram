@@ -1,0 +1,50 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using Windgram.Identity.ApplicationCore.Domain.Entities;
+
+@inject SignInManager<UserIdentity> SignInManager
+@inject UserManager<UserIdentity> UserManager
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm  navbar-dark bg-primary mb-3">
+        <div class="container">
+            <a class="navbar-brand" href="/">Windgram</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse mr-auto" id="navigationBar">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">首页</a>
+                    </li>
+                </ul>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    var avatarUrl = User.FindFirst(IdentityModel.JwtClaimTypes.Picture)?.Value;
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @if (!string.IsNullOrEmpty(avatarUrl))
+                                {
+                                    <img src="@avatarUrl" style="height:2rem;width:auto;border-radius:50%" />
+                                }
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" asp-action="Index" asp-controller="Home">个人中心</a>
+                                <a class="dropdown-item" asp-action="Index" asp-controller="Logout">退出登录</a>
+                            </div>
+                        </li>
+                    </ul>
+                }
+                else
+                {
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Register" asp-action="Index">注册</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Login" asp-action="Index">登录</a></li>
+                    </ul>
+                }
+            </div>
+        </div>
+    </nav>
+</header>
+
+

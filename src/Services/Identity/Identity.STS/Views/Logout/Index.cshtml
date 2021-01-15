@@ -1,0 +1,19 @@
+﻿@model Windgram.Identity.STS.Models.Account.LogoutViewModel
+
+@{
+    ViewData["Title"] = "Logout";
+    Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+}
+
+
+<h4>退出登录</h4>
+<p>
+    确定要退出登录？
+</p>
+<partial name="_ValidationSummary" />
+<form asp-action="Index">
+    @Html.HiddenFor(m => m.LogoutId)
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">确定</button>
+    </div>
+</form> 

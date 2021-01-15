@@ -15,7 +15,6 @@ export class AuthInterceptor implements HttpInterceptor {
         const tokenSource = from(this.authService.getUser());
         return tokenSource.pipe(
             switchMap((user => {
-                console.log(user);
                 let request = req;
                 if (user) {
                     request = request.clone({

@@ -17,7 +17,7 @@ namespace Windgram.Identity.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.2");
 
-            modelBuilder.Entity("Windgram.ApplicationCore.Domain.Entities.UserIdentity", b =>
+            modelBuilder.Entity("Windgram.Identity.ApplicationCore.Domain.Entities.UserIdentity", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
@@ -87,7 +87,7 @@ namespace Windgram.Identity.Infrastructure.Migrations
                     b.ToTable("user", "identity");
                 });
 
-            modelBuilder.Entity("Windgram.ApplicationCore.Domain.Entities.UserIdentityRole", b =>
+            modelBuilder.Entity("Windgram.Identity.ApplicationCore.Domain.Entities.UserIdentityRole", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
@@ -119,7 +119,7 @@ namespace Windgram.Identity.Infrastructure.Migrations
                     b.ToTable("role", "identity");
                 });
 
-            modelBuilder.Entity("Windgram.ApplicationCore.Domain.Entities.UserIdentityRoleClaim", b =>
+            modelBuilder.Entity("Windgram.Identity.ApplicationCore.Domain.Entities.UserIdentityRoleClaim", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -142,7 +142,7 @@ namespace Windgram.Identity.Infrastructure.Migrations
                     b.ToTable("role_claim", "identity");
                 });
 
-            modelBuilder.Entity("Windgram.ApplicationCore.Domain.Entities.UserIdentityUserClaim", b =>
+            modelBuilder.Entity("Windgram.Identity.ApplicationCore.Domain.Entities.UserIdentityUserClaim", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -165,7 +165,7 @@ namespace Windgram.Identity.Infrastructure.Migrations
                     b.ToTable("user_claim", "identity");
                 });
 
-            modelBuilder.Entity("Windgram.ApplicationCore.Domain.Entities.UserIdentityUserLogin", b =>
+            modelBuilder.Entity("Windgram.Identity.ApplicationCore.Domain.Entities.UserIdentityUserLogin", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("varchar(255)");
@@ -187,7 +187,7 @@ namespace Windgram.Identity.Infrastructure.Migrations
                     b.ToTable("user_login", "identity");
                 });
 
-            modelBuilder.Entity("Windgram.ApplicationCore.Domain.Entities.UserIdentityUserRole", b =>
+            modelBuilder.Entity("Windgram.Identity.ApplicationCore.Domain.Entities.UserIdentityUserRole", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(255)");
@@ -202,7 +202,7 @@ namespace Windgram.Identity.Infrastructure.Migrations
                     b.ToTable("user_role", "identity");
                 });
 
-            modelBuilder.Entity("Windgram.ApplicationCore.Domain.Entities.UserIdentityUserToken", b =>
+            modelBuilder.Entity("Windgram.Identity.ApplicationCore.Domain.Entities.UserIdentityUserToken", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(255)");
@@ -221,51 +221,51 @@ namespace Windgram.Identity.Infrastructure.Migrations
                     b.ToTable("user_token", "identity");
                 });
 
-            modelBuilder.Entity("Windgram.ApplicationCore.Domain.Entities.UserIdentityRoleClaim", b =>
+            modelBuilder.Entity("Windgram.Identity.ApplicationCore.Domain.Entities.UserIdentityRoleClaim", b =>
                 {
-                    b.HasOne("Windgram.ApplicationCore.Domain.Entities.UserIdentityRole", null)
+                    b.HasOne("Windgram.Identity.ApplicationCore.Domain.Entities.UserIdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Windgram.ApplicationCore.Domain.Entities.UserIdentityUserClaim", b =>
+            modelBuilder.Entity("Windgram.Identity.ApplicationCore.Domain.Entities.UserIdentityUserClaim", b =>
                 {
-                    b.HasOne("Windgram.ApplicationCore.Domain.Entities.UserIdentity", null)
+                    b.HasOne("Windgram.Identity.ApplicationCore.Domain.Entities.UserIdentity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Windgram.ApplicationCore.Domain.Entities.UserIdentityUserLogin", b =>
+            modelBuilder.Entity("Windgram.Identity.ApplicationCore.Domain.Entities.UserIdentityUserLogin", b =>
                 {
-                    b.HasOne("Windgram.ApplicationCore.Domain.Entities.UserIdentity", null)
+                    b.HasOne("Windgram.Identity.ApplicationCore.Domain.Entities.UserIdentity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Windgram.ApplicationCore.Domain.Entities.UserIdentityUserRole", b =>
+            modelBuilder.Entity("Windgram.Identity.ApplicationCore.Domain.Entities.UserIdentityUserRole", b =>
                 {
-                    b.HasOne("Windgram.ApplicationCore.Domain.Entities.UserIdentityRole", null)
+                    b.HasOne("Windgram.Identity.ApplicationCore.Domain.Entities.UserIdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Windgram.ApplicationCore.Domain.Entities.UserIdentity", null)
+                    b.HasOne("Windgram.Identity.ApplicationCore.Domain.Entities.UserIdentity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Windgram.ApplicationCore.Domain.Entities.UserIdentityUserToken", b =>
+            modelBuilder.Entity("Windgram.Identity.ApplicationCore.Domain.Entities.UserIdentityUserToken", b =>
                 {
-                    b.HasOne("Windgram.ApplicationCore.Domain.Entities.UserIdentity", null)
+                    b.HasOne("Windgram.Identity.ApplicationCore.Domain.Entities.UserIdentity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

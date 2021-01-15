@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
-using Windgram.ApplicationCore.Domain.Entities;
+using Windgram.Identity.ApplicationCore.Domain.Entities;
 using Windgram.Domain.Shared;
 using Windgram.Domain.Shared.Extensions;
 using Windgram.Identity.ApplicationCore.Constants;

@@ -1,4 +1,4 @@
-﻿namespace Windgram.ApplicationCore.Constants
+﻿namespace Windgram.Identity.ApplicationCore.Constants
 {
     public static class UserClaimDefaults
     {

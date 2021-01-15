@@ -2,7 +2,7 @@
 using System;
 using Windgram.Domain.Shared;
 
-namespace Windgram.ApplicationCore.Domain.Entities
+namespace Windgram.Identity.ApplicationCore.Domain.Entities
 {
     public class UserIdentityRole : IdentityRole, IEntity
     {

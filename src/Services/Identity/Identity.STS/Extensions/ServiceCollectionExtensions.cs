@@ -1,5 +1,4 @@
 ﻿using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
@@ -9,10 +8,8 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 using System;
-using System.Net;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using Windgram.ApplicationCore.Domain.Entities;
+using Windgram.Identity.ApplicationCore.Domain.Entities;
 using Windgram.Caching.Redis;
 using Windgram.EventBus.RabbitMQ;
 using Windgram.Identity.ApplicationCore;
@@ -23,16 +20,20 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     internal static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddWindgramIdentityWeb(this IServiceCollection services, IConfiguration configuration, IHostEnvironment hostEnvironment)
+        public static IServiceCollection AddWindgramIdentitySTS(this IServiceCollection services, IConfiguration configuration, IHostEnvironment hostEnvironment)
         {
             var redisConnection = configuration.GetSection(Windgram.Caching.CacheConfig.CONFIGURATION_KEY)["ConnectionString"];
             var identityConnection = configuration.GetConnectionString("IdentityConnection");
             var configurationConnection = configuration.GetConnectionString("ConfigurationConnection");
             var persistedGrantConnection = configuration.GetConnectionString("PersistedGrantConnection");
 
+            services.AddControllersWithViews()
+               .AddNewtonsoftJson(setup =>
+               {
+                   setup.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+               })
+               .AddFluentValidation();
             services
-                .AddWindgramMvc()
-                .AddWindgramSwagger(configuration["ApiName"], configuration["ApiVersion"])
                 .AddWindgramHealthChecks()
                 .AddWindgramCookiePolicy()
                 .AddWindgramCorsPolicy(configuration["CorsPolicy"])
@@ -42,7 +43,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddWindgramIdentityApplication(identityConnection)
                 .AddWindgramRedisCache(configuration)
                 .AddWindgramDataProtection(redisConnection)
-                .AddWindgramEventBusRabbitMQ(configuration, typeof(Windgram.Identity.STS.Startup).Assembly);
+                .AddWindgramEventBusRabbitMQ(configuration, typeof(Windgram.Identity.STS.Startup).Assembly)
+                .AddWindgramHttpUserContext();
 
             return services;
         }
@@ -80,14 +82,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.ConfigureApplicationCookie(o =>
             {
                 o.Cookie.Name = "Identity.STS";
-                o.Events = new CookieAuthenticationEvents()
-                {
-                    OnRedirectToLogin = ctx =>
-                    {
-                        ctx.HttpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                        return Task.CompletedTask;
-                    }
-                };
+                o.LoginPath = "/Login";
             });
             return services;
         }
