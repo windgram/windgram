@@ -68,6 +68,8 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddIdentity<UserIdentity, UserIdentityRole>(options =>
             {
+                options.User.RequireUniqueEmail = true;
+                options.User.AllowedUserNameCharacters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
                 options.Password = new PasswordOptions
                 {
                     RequireDigit = true,

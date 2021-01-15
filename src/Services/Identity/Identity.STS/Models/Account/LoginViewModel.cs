@@ -8,7 +8,7 @@ namespace Windgram.Identity.STS.Models.Account
     public class LoginInputModel
     {
         [Display(Name = "邮箱地址")]
-        public string UserName { get; set; }
+        public string Email { get; set; }
         [Display(Name = "密码")]
         [DataType(DataType.Password)]
         public string Password { get; set; }

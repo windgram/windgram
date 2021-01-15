@@ -51,10 +51,9 @@ namespace Windgram.Identity.STS.Controllers
 
             var user = new UserIdentity
             {
-                UserName = model.Email,
+                UserName = Guid.NewGuid().ToString("N"),
                 Email = model.Email,
                 CreatedDateTime = DateTime.Now,
-                EmailConfirmed = true
             };
             var existUser = await _userManager.FindByEmailAsync(user.Email);
             if (existUser != null)

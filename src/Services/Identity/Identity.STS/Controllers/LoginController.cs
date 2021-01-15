@@ -101,10 +101,10 @@ namespace Windgram.Identity.STS.Controllers
 
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(model.UserName);
+                var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user != default(UserIdentity))
                 {
-                    var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberLogin, lockoutOnFailure: true);
+                    var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberLogin, lockoutOnFailure: true);
                     if (result.Succeeded)
                     {
                         await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id.ToString(), user.UserName, clientId: context?.Client.ClientId));
@@ -159,7 +159,7 @@ namespace Windgram.Identity.STS.Controllers
                     }
                 }
 
-                await _events.RaiseAsync(new UserLoginFailureEvent(model.UserName, "invalid credentials", clientId: context?.Client.ClientId));
+                await _events.RaiseAsync(new UserLoginFailureEvent(user.UserName, "invalid credentials", clientId: context?.Client.ClientId));
                 ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
             }
 
@@ -248,7 +248,7 @@ namespace Windgram.Identity.STS.Controllers
                 {
                     EnableLocalLogin = local,
                     ReturnUrl = returnUrl,
-                    UserName = context?.LoginHint,
+                    Email = context?.LoginHint,
                 };
 
                 if (!local)
@@ -289,7 +289,7 @@ namespace Windgram.Identity.STS.Controllers
                 AllowRememberLogin = AccountOptions.AllowRememberLogin,
                 EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
                 ReturnUrl = returnUrl,
-                UserName = context?.LoginHint,
+                Email = context?.LoginHint,
                 ExternalProviders = providers.ToArray()
             };
         }
@@ -297,7 +297,7 @@ namespace Windgram.Identity.STS.Controllers
         private async Task<LoginViewModel> BuildLoginViewModelAsync(LoginInputModel model)
         {
             var vm = await BuildLoginViewModelAsync(model.ReturnUrl);
-            vm.UserName = model.UserName;
+            vm.Email = model.Email;
             vm.RememberLogin = model.RememberLogin;
             return vm;
         }
