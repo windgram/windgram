@@ -7,13 +7,6 @@ namespace Windgram.Identity.STS.Controllers
     [Authorize]
     public abstract class BaseController : Controller
     {
-        protected virtual void AddErrors(IdentityResult result)
-        {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-        }
         protected virtual IActionResult RedirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))

@@ -15,6 +15,7 @@ using Windgram.EventBus.RabbitMQ;
 using Windgram.Identity.ApplicationCore;
 using Windgram.Identity.Infrastructure;
 using Windgram.Identity.Web.Services;
+using Microsoft.AspNetCore.Mvc.Razor;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -26,9 +27,11 @@ namespace Microsoft.Extensions.DependencyInjection
             var identityConnection = configuration.GetConnectionString("IdentityConnection");
             var configurationConnection = configuration.GetConnectionString("ConfigurationConnection");
             var persistedGrantConnection = configuration.GetConnectionString("PersistedGrantConnection");
-
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddControllersWithViews()
-               .AddNewtonsoftJson(setup =>
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+                .AddDataAnnotationsLocalization()
+                .AddNewtonsoftJson(setup =>
                {
                    setup.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                })
@@ -69,7 +72,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddIdentity<UserIdentity, UserIdentityRole>(options =>
             {
                 options.User.RequireUniqueEmail = true;
-                options.User.AllowedUserNameCharacters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
                 options.Password = new PasswordOptions
                 {
                     RequireDigit = true,

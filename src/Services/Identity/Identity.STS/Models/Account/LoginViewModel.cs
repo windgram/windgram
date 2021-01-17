@@ -7,12 +7,10 @@ namespace Windgram.Identity.STS.Models.Account
 {
     public class LoginInputModel
     {
-        [Display(Name = "邮箱地址")]
-        public string Email { get; set; }
-        [Display(Name = "密码")]
-        [DataType(DataType.Password)]
+        [Required]
+        public string Username { get; set; }
+        [Required]
         public string Password { get; set; }
-        [Display(Name = "记住密码")]
         public bool RememberLogin { get; set; }
         public string ReturnUrl { get; set; }
     }
@@ -20,7 +18,6 @@ namespace Windgram.Identity.STS.Models.Account
     {
         public bool AllowRememberLogin { get; set; } = true;
         public bool EnableLocalLogin { get; set; } = true;
-
         public IEnumerable<ExternalProvider> ExternalProviders { get; set; } = Enumerable.Empty<ExternalProvider>();
         public IEnumerable<ExternalProvider> VisibleExternalProviders => ExternalProviders.Where(x => !String.IsNullOrWhiteSpace(x.DisplayName));
 
