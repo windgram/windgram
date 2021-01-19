@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
+    <PackageReference Include="Dapper" Version="2.0.78" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="9.4.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="MySqlConnector" Version="1.2.1" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.0-alpha.2" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\Caching\Windgram.Caching\Windgram.Caching.csproj" />
+    <ProjectReference Include="..\..\EventBus\Windgram.EventBus\Windgram.EventBus.csproj" />
+    <ProjectReference Include="..\Windgram.Shared.Domain\Windgram.Shared.Domain.csproj" />
+  </ItemGroup>
+</Project>

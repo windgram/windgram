@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Shared\Windgram.Shared.Web\Windgram.Shared.Web.csproj" />
+    <ProjectReference Include="..\Windgram.Identity.Infrastructure\Windgram.Identity.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
