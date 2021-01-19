@@ -77,24 +77,14 @@ namespace Windgram.Identity.STS.Controllers
             {
                 return View("Lockout");
             }
-            if (result.IsNotAllowed)
-            {
-                return RedirectToAction(nameof(AccountController.ConfirmEmail), "Account", new
-                {
-                    ReturnUrl = returnUrl,
-                    UserId = user.Id
-                });
-            }
-
-            // If the user does not have an account, then ask the user to create an account.
-            ViewData["ReturnUrl"] = returnUrl; 
-            return View(nameof(Confirmation));
+            return RedirectToAction(nameof(Confirmation), new { returnUrl });
         }
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> Confirmation(string returnUrl = null)
+        public IActionResult Confirmation(string returnUrl = null)
         {
-            return Ok();
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
         }
         [HttpPost]
         [AllowAnonymous]
@@ -112,28 +102,15 @@ namespace Windgram.Identity.STS.Controllers
 
             if (ModelState.IsValid)
             {
-                var user = new UserIdentity
+                var user = await _userManager.FindByLoginAsync(loginInfo.LoginProvider, loginInfo.ProviderKey);
+                if (user == null)
                 {
-                    UserName = System.Guid.NewGuid().ToString("n"),
-                    Email = model.Email
-                };
-
-                var result = await _userManager.CreateAsync(user);
-                if (result.Succeeded)
-                {
-                    result = await _userManager.AddLoginAsync(user, loginInfo);
-                    if (result.Succeeded)
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-
-                        return RedirectToLocal(returnUrl);
-                    }
+                    return View("LoginFailure");
                 }
+                await _signInManager.SignInAsync(user, isPersistent: false);
 
-                AddIdentityErrors(result);
+                return RedirectToLocal(returnUrl);
             }
-
-            ViewData["LoginProvider"] = loginInfo.LoginProvider;
             ViewData["ReturnUrl"] = returnUrl;
 
             return View(model);
