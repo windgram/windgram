@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\Shared\Windgram.Shared.Web\Windgram.Shared.Web.csproj" />
+    <ProjectReference Include="..\Extensions\Microsoft.AspNetCore.Authentication.GitHub\Microsoft.AspNetCore.Authentication.GitHub.csproj" />
     <ProjectReference Include="..\Windgram.Identity.Infrastructure\Windgram.Identity.Infrastructure.csproj" />
   </ItemGroup>
 

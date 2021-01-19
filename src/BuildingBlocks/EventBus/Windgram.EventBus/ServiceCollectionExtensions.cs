@@ -1,7 +1,6 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using System.Linq;
 using System.Reflection;
 
@@ -11,8 +10,9 @@ namespace Windgram.EventBus
     {
         public static IServiceCollection AddWindgramEventBusInMemory(this IServiceCollection services, IConfiguration configuration, Assembly[] assemblies = null)
         {
-            services.Configure<EventBusConfig>(configuration.GetSection(EventBusConfig.CONFIGURATION_KEY));
-            var eventBusConfig = services.BuildServiceProvider().GetRequiredService<IOptions<EventBusConfig>>().Value;
+            var eventBusConfig = configuration.GetSection(EventBusConfig.CONFIGURATION_KEY).Get<EventBusConfig>();
+            services.Configure<EventBusConfig>(options => options = eventBusConfig);
+
             var anyAssemblies = assemblies != null && assemblies.Any();
             services.AddMassTransit(config =>
             {

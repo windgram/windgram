@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.DependencyInjection;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Authentication.GitHub;
+using System.Linq;
 
 namespace Windgram.Identity.Web.Extensions
 {
@@ -92,7 +94,7 @@ namespace Windgram.Identity.Web.Extensions
         {
             services.AddIdentity<UserIdentity, UserIdentityRole>(options =>
             {
-                options.User.RequireUniqueEmail = true;
+                options.SignIn.RequireConfirmedAccount = true;
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
                 options.Password = new PasswordOptions
                 {
@@ -108,7 +110,6 @@ namespace Windgram.Identity.Web.Extensions
             services.ConfigureApplicationCookie(o =>
             {
                 o.Cookie.Name = "Identity.STS";
-                o.LoginPath = "/Login";
             });
             return services;
         }
@@ -140,19 +141,19 @@ namespace Windgram.Identity.Web.Extensions
                 identityBuilder
                .AddSigningCredential(new X509Certificate2(configuration["CertificatePath"], configuration["CertificatePassword"]));
             }
-            //services.AddAuthentication()
-            //.AddGitHub(options =>
-            //{
-            //    options.ClientId = configuration["Github:ClientId"];
-            //    options.ClientSecret = configuration["Github:ClientSecret"];
-            //    options.AllowSignup = true;
-            //    var scopesString = configuration["Github:Scopes"];
-            //    if (!scopesString.IsNullOrEmpty())
-            //    {
-            //        var scopes = scopesString.Split(",").ToList();
-            //        scopes.ForEach(s => options.Scope.Add(s));
-            //    }
-            //});
+            services.AddAuthentication()
+                .AddGitHub(options =>
+                {
+                    options.ClientId = configuration["Github:ClientId"];
+                    options.ClientSecret = configuration["Github:ClientSecret"];
+                    options.AllowSignup = true;
+                    var scopesString = configuration["Github:Scopes"];
+                    if (!scopesString.IsNullOrEmpty())
+                    {
+                        var scopes = scopesString.Split(",").ToList();
+                        scopes.ForEach(s => options.Scope.Add(s));
+                    }
+                });
             return services;
         }
 

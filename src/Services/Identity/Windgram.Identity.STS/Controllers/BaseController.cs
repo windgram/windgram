@@ -16,5 +16,12 @@ namespace Windgram.Identity.STS.Controllers
 
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
+        protected void AddIdentityErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
     }
 }

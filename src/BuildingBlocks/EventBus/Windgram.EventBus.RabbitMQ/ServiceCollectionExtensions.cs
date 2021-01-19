@@ -1,7 +1,6 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using System.Linq;
 using System.Reflection;
 
@@ -10,9 +9,10 @@ namespace Windgram.EventBus.RabbitMQ
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddWindgramEventBusRabbitMQ(this IServiceCollection services, IConfiguration configuration, params Assembly[] assemblies)
-        {
-            services.Configure<RabbitMQConfig>(configuration.GetSection(EventBusConfig.CONFIGURATION_KEY));
-            var mqConfig = services.BuildServiceProvider().GetRequiredService<IOptions<RabbitMQConfig>>().Value;
+        { 
+            var mqConfig = configuration.GetSection(EventBusConfig.CONFIGURATION_KEY).Get<RabbitMQConfig>();
+            services.Configure<RabbitMQConfig>(options => options = mqConfig);
+
             var anyAssemblies = assemblies != null && assemblies.Any();
             services.AddMassTransit(config =>
             {

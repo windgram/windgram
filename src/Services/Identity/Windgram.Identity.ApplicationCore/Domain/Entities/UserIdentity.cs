@@ -9,5 +9,7 @@ namespace Windgram.Identity.ApplicationCore.Domain.Entities
         public static string GetProfileById(string userId) => $"user_id_{userId}";
         public DateTime CreatedDateTime { get; set; }
         public DateTime? LastModifiedDateTime { get; set; }
+
+        public static string GenerateGuidUserName() => Guid.NewGuid().ToString("N");
     }
 }

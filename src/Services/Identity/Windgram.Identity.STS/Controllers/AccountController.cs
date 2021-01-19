@@ -38,8 +38,7 @@ namespace Windgram.Identity.STS.Controllers
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly IEventService _events;
         private readonly UserManager<UserIdentity> _userManager;
-        private readonly SignInManager<UserIdentity> _signInManager;
-        private readonly IdentityOptions _identityOptions;
+        private readonly SignInManager<UserIdentity> _signInManager; 
         private readonly IStringLocalizer<AccountController> _localizer;
         public AccountController(
             ILogger<AccountController> logger,
@@ -50,8 +49,7 @@ namespace Windgram.Identity.STS.Controllers
             IAuthenticationSchemeProvider schemeProvider,
             IEventService events,
             UserManager<UserIdentity> userManager,
-            SignInManager<UserIdentity> signInManager,
-            IdentityOptions identityOptions,
+            SignInManager<UserIdentity> signInManager, 
             IStringLocalizer<AccountController> localizer)
         {
             _logger = logger;
@@ -62,8 +60,7 @@ namespace Windgram.Identity.STS.Controllers
             _schemeProvider = schemeProvider;
             _events = events;
             _userManager = userManager;
-            _signInManager = signInManager;
-            _identityOptions = identityOptions;
+            _signInManager = signInManager; 
             _localizer = localizer;
         }
 
@@ -77,8 +74,7 @@ namespace Windgram.Identity.STS.Controllers
 
             if (vm.EnableLocalLogin == false && vm.ExternalProviders.Count() == 1)
             {
-                // only one option for logging in
-                return ExternalLogin(vm.ExternalProviders.First().AuthenticationScheme, returnUrl);
+                return RedirectToAction(nameof(ExternalLoginController.Challenge), "ExternalLogin", new { scheme = vm.ExternalLoginScheme, returnUrl });
             }
 
             return View(vm);
@@ -173,99 +169,7 @@ namespace Windgram.Identity.STS.Controllers
             var vm = await BuildLoginViewModelAsync(model);
             return View(vm);
         }
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
-        {
-            if (remoteError != null)
-            {
-                ModelState.AddModelError(string.Empty, remoteError);
 
-                return View(nameof(Login));
-            }
-            var info = await _signInManager.GetExternalLoginInfoAsync();
-            if (info == null)
-            {
-                return RedirectToAction(nameof(Login));
-            }
-
-            // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
-            if (result.Succeeded)
-            {
-                return RedirectToLocal(returnUrl);
-            }
-            if (result.RequiresTwoFactor)
-            {
-                return RedirectToAction(nameof(LoginWith2fa), new { ReturnUrl = returnUrl });
-            }
-            if (result.IsLockedOut)
-            {
-                return View("Lockout");
-            }
-
-            // If the user does not have an account, then ask the user to create an account.
-            ViewData["ReturnUrl"] = returnUrl;
-            ViewData["LoginProvider"] = info.LoginProvider;
-            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-
-            return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = email });
-        }
-
-        [HttpPost]
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult ExternalLogin(string provider, string returnUrl = null)
-        {
-            // Request a redirect to the external login provider.
-            var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl });
-            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
-
-            return Challenge(properties, provider);
-        }
-
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl = null)
-        {
-            returnUrl = returnUrl ?? Url.Content("~/");
-
-            // Get the information about the user from the external login provider
-            var info = await _signInManager.GetExternalLoginInfoAsync();
-            if (info == null)
-            {
-                return View("ExternalLoginFailure");
-            }
-
-            if (ModelState.IsValid)
-            {
-                var user = new UserIdentity
-                {
-                    UserName = System.Guid.NewGuid().ToString("n"),
-                    Email = model.Email
-                };
-
-                var result = await _userManager.CreateAsync(user);
-                if (result.Succeeded)
-                {
-                    result = await _userManager.AddLoginAsync(user, info);
-                    if (result.Succeeded)
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-
-                        return RedirectToLocal(returnUrl);
-                    }
-                }
-
-                AddErrors(result);
-            }
-
-            ViewData["LoginProvider"] = info.LoginProvider;
-            ViewData["ReturnUrl"] = returnUrl;
-
-            return View(model);
-        }
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> LoginWith2fa(bool rememberMe, string returnUrl = null)
@@ -322,6 +226,7 @@ namespace Windgram.Identity.STS.Controllers
             return View(model);
         }
         #endregion
+
         #region Register
         [HttpGet]
         [AllowAnonymous]
@@ -364,18 +269,10 @@ namespace Windgram.Identity.STS.Controllers
                     Subject = "邮箱验证 - 西岸",
                     To = user.Email
                 });
-                if (_identityOptions.SignIn.RequireConfirmedAccount)
-                {
-                    return View("RegisterConfirmation");
-                }
-                else
-                {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(returnUrl);
-                }
+                return View("RegisterConfirmation");
             }
 
-            AddErrors(result);
+            AddIdentityErrors(result);
 
             // If we got this far, something failed, redisplay form
             return View(model);
@@ -402,13 +299,7 @@ namespace Windgram.Identity.STS.Controllers
         #endregion
         #region helper APIs for the AccountController
 
-        private void AddErrors(IdentityResult result)
-        {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-        }
+
         private async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
         {
             var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
