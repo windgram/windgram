@@ -12,6 +12,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Windgram.EventBus;
 using Windgram.Identity.ApplicationCore.Domain.Entities;
+using Windgram.Identity.STS.Extensions;
 using Windgram.Identity.STS.Models.Account;
 
 namespace Windgram.Identity.STS.Controllers
@@ -63,37 +64,29 @@ namespace Windgram.Identity.STS.Controllers
             {
                 return RedirectToAction(nameof(AccountController.Login), "Account");
             }
-            var user = await AutoProvisionUser(loginInfo);
-            // Sign in the user with this external login provider if the user already has a login.
-            var props = new AuthenticationProperties();
-            props.StoreTokens(loginInfo.AuthenticationTokens);
-            props.IsPersistent = true;
+            var result = await _signInManager.ExternalLoginSignInAsync(loginInfo.LoginProvider, loginInfo.ProviderKey, false, true);
+            if (result.Succeeded)
+            {
+                return RedirectToLocal(returnUrl);
+            }
+            if (result.RequiresTwoFactor)
+            {
+                return RedirectToAction(nameof(AccountController.LoginWith2fa), new { ReturnUrl = returnUrl });
+            }
+            if (result.IsLockedOut)
+            {
+                return RedirectToAction(nameof(AccountController.Lockout), "Account");
+            }
 
-            await _signInManager.SignInAsync(user, props);
-          //  var result = await _signInManager.ExternalLoginSignInAsync(loginInfo.LoginProvider, loginInfo.ProviderKey, isPersistent: true);
-            //if (result.Succeeded)
-            //{
-            //    return RedirectToLocal(returnUrl);
-            //}
-            //if (result.RequiresTwoFactor)
-            //{
-            //    return RedirectToAction(nameof(AccountController.LoginWith2fa), "Account", new { ReturnUrl = returnUrl });
-            //}
-            //if (result.IsLockedOut)
-            //{
-            //    return View("Lockout");
-            //}
-            return RedirectToAction(nameof(Confirmation), new { returnUrl });
-        }
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult Confirmation(string returnUrl = null)
-        {
-            var user = User;
-            var h = HttpContext.GetTokenAsync("access_token");
+            // If the user does not have an account, then ask the user to create an account.
             ViewData["ReturnUrl"] = returnUrl;
-            return View();
+            ViewData["LoginProvider"] = loginInfo.LoginProvider;
+            return View(nameof(Confirmation), new ExternalLoginConfirmationViewModel
+            {
+                Email = loginInfo.TryGetExternalLoginEmail()
+            });
         }
+
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -149,11 +142,23 @@ namespace Windgram.Identity.STS.Controllers
                 else
                 {
                     var code = await _userManager.GenerateChangeEmailTokenAsync(user, model.Email);
+                    _logger.LogInformation("Email Authenticator code");
                 }
             }
             return BadRequest(ModelState);
         }
 
+        private async Task SignInWithTokens(UserIdentity user, ExternalLoginInfo loginInfo)
+        {
+            var result = await _signInManager.UpdateExternalAuthenticationTokensAsync(loginInfo);
+            if (!result.Succeeded)
+                throw new Exception(result.Errors.First().Description);
+
+            var props = new AuthenticationProperties();
+            props.StoreTokens(loginInfo.AuthenticationTokens);
+            props.IsPersistent = true;
+            await _signInManager.SignInAsync(user, props);
+        }
         private async Task<UserIdentity> AutoProvisionUser(ExternalLoginInfo loginInfo)
         {
             var user = await _userManager.FindByLoginAsync(loginInfo.LoginProvider, loginInfo.ProviderKey);

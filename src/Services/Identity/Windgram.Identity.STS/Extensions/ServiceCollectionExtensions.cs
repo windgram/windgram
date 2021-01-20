@@ -21,9 +21,6 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Authentication.GitHub;
 using System.Linq;
-using Microsoft.AspNetCore.Authentication;
-using System.Threading.Tasks;
-using System.Security.Claims;
 
 namespace Windgram.Identity.Web.Extensions
 {
@@ -166,7 +163,7 @@ namespace Windgram.Identity.Web.Extensions
                 {
                     options.SaveTokens = true;
                     options.ClientId = configuration["Microsoft:ClientId"];
-                    options.ClientSecret = configuration["Microsoft:ClientSecret"];
+                    options.ClientSecret = configuration["Microsoft:ClientSecret"]; 
                     //options.Events.OnCreatingTicket = ctx =>
                     //{
                     //    ctx.Properties.StoreTokens();

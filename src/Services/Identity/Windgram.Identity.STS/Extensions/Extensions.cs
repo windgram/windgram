@@ -1,6 +1,9 @@
-﻿using IdentityServer4.Models;
+﻿using IdentityModel;
+using IdentityServer4.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Security.Claims;
 using Windgram.Identity.STS.Models;
 
 namespace Windgram.Identity.STS.Extensions
@@ -23,6 +26,11 @@ namespace Windgram.Identity.STS.Extensions
             controller.HttpContext.Response.Headers["Location"] = "";
 
             return controller.View(viewName, new RedirectViewModel { RedirectUrl = redirectUri });
+        }
+
+        public static string TryGetExternalLoginEmail(this ExternalLoginInfo loginInfo)
+        {
+            return loginInfo.Principal.FindFirstValue(JwtClaimTypes.Email) ?? loginInfo.Principal.FindFirstValue(ClaimTypes.Email);
         }
     }
 }

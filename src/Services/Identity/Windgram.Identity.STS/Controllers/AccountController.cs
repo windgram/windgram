@@ -298,8 +298,12 @@ namespace Windgram.Identity.STS.Controllers
         }
         #endregion
         #region helper APIs for the AccountController
-
-
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Lockout()
+        {
+            return View();
+        }
         private async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
         {
             var context = await _interaction.GetAuthorizationContextAsync(returnUrl);

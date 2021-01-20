@@ -1,30 +1,37 @@
-﻿@model Windgram.Identity.STS.Models.Account.ExternalLoginConfirmationViewModel
+﻿@inject IViewLocalizer Localizer
+@using Microsoft.AspNetCore.Mvc.Localization
+@model Windgram.Identity.STS.Models.Account.ExternalLoginConfirmationViewModel
 
 @{
-    ViewData["Title"] = "Confirmation";
+    ViewData["Title"] = Localizer["Title"];
     Layout = "~/Views/Shared/_LayoutAccount.cshtml";
 }
 
-<h1>Confirm Register</h1>
+<h2>@ViewData["Title"]</h2>
 
-<hr />
-<form asp-action="Confirmation" asp-route-returnUrl="@ViewData["returnUrl"]">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<h4>@Localizer["SubTitle", ViewData["LoginProvider"]]</h4>
+
+<form asp-action="Confirmation" asp-route-returnUrl="@ViewData["returnUrl"]" method="post" class="form-horizontal">
+    <hr />
+    @await Html.PartialAsync("_ValidationSummary")
+    <div class="alert alert-info" role="alert">
+        @Localizer["Info", ViewData["LoginProvider"]]
+    </div>
     <div class="form-group">
-        <label asp-for="Email" class="control-label"></label>
+        <label asp-for="Email" class="control-label">@Localizer["Email"]</label>
         <div class="input-group mb-3">
             <input asp-for="Email" class="form-control" />
-            <button class="btn btn-outline-secondary" type="button" onclick="sendCode(this)">SendCode</button>
+            <button class="btn btn-outline-secondary" type="button" onclick="sendCode(this)">@Localizer["SendCode"]</button>
         </div>
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Code" class="control-label"></label>
+        <label asp-for="Code" class="control-label">@Localizer["Code"]</label>
         <input asp-for="Code" class="form-control" />
         <span asp-validation-for="Code" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">@Localizer["Register"]</button>
     </div>
 </form>
 @section Scripts {
@@ -42,7 +49,7 @@
                     if (countingDown === 0) {
                         button.removeAttribute('disabled');
                         isPosting = false;
-                        button.innerText = '重新发送';
+                        button.innerText = '@Localizer["ResendCode"]';
                         clearInterval(interval);
                     }
                 }, 1000);
