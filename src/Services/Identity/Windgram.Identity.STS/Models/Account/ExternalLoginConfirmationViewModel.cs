@@ -10,4 +10,10 @@ namespace Windgram.Identity.STS.Models.Account
         [Required] 
         public string Code { get; set; }
     }
+    public class ExternalLoginBindEmailViewModel
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+    }
 }

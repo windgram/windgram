@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
+using System.Threading.Tasks;
 
 namespace Windgram.Identity.STS.Controllers
 {
@@ -12,8 +14,10 @@ namespace Windgram.Identity.STS.Controllers
             _localizer = localizer;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var accessToken =await HttpContext.GetTokenAsync("access_token");
+            var cookies = HttpContext.Request.Cookies;
             ViewData["Message"] = _localizer["Message"];
             return View();
         }

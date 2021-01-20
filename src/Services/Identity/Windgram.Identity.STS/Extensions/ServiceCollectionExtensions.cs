@@ -21,6 +21,9 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Authentication.GitHub;
 using System.Linq;
+using Microsoft.AspNetCore.Authentication;
+using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace Windgram.Identity.Web.Extensions
 {
@@ -105,8 +108,13 @@ namespace Windgram.Identity.Web.Extensions
                     RequireNonAlphanumeric = false,
                     RequiredLength = 8
                 };
+                options.Tokens.ChangeEmailTokenProvider = TokenOptions.DefaultEmailProvider;
+                options.Tokens.ChangePhoneNumberTokenProvider = TokenOptions.DefaultPhoneProvider;
+                options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
+                options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultEmailProvider;
             }).AddEntityFrameworkStores<IdentityContext>()
             .AddDefaultTokenProviders();
+
             services.ConfigureApplicationCookie(o =>
             {
                 o.Cookie.Name = "Identity.STS";
@@ -153,6 +161,17 @@ namespace Windgram.Identity.Web.Extensions
                         var scopes = scopesString.Split(",").ToList();
                         scopes.ForEach(s => options.Scope.Add(s));
                     }
+                })
+                .AddMicrosoftAccount(options =>
+                {
+                    options.SaveTokens = true;
+                    options.ClientId = configuration["Microsoft:ClientId"];
+                    options.ClientSecret = configuration["Microsoft:ClientSecret"];
+                    //options.Events.OnCreatingTicket = ctx =>
+                    //{
+                    //    ctx.Properties.StoreTokens();
+                    //    return Task.CompletedTask;
+                    //};
                 });
             return services;
         }

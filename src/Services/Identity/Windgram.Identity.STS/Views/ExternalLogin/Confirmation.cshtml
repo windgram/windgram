@@ -14,7 +14,7 @@
         <label asp-for="Email" class="control-label"></label>
         <div class="input-group mb-3">
             <input asp-for="Email" class="form-control" />
-            <button class="btn btn-outline-secondary" type="button" id="button-addon2">SendCode</button>
+            <button class="btn btn-outline-secondary" type="button" onclick="sendCode(this)">SendCode</button>
         </div>
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>
@@ -29,4 +29,44 @@
 </form>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var isPosting = false;
+        function sendCode(button) {
+            if (!isPosting) {
+                button.setAttribute('disabled', 'true');
+                isPosting = true;
+                let countingDown = 60;
+                var interval = setInterval(() => {
+                    countingDown--;
+                    button.innerText = countingDown + 's';
+                    if (countingDown === 0) {
+                        button.removeAttribute('disabled');
+                        isPosting = false;
+                        button.innerText = '重新发送';
+                        clearInterval(interval);
+                    }
+                }, 1000);
+                requestSendCode(document.getElementById('Email').value);
+            }
+        }
+        function requestSendCode(email) {
+            var csrfToken = getCookie("CSRF-TOKEN");
+            console.log(csrfToken);
+            console.log(email);
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (xhttp.readyState == XMLHttpRequest.DONE) {
+                    if (xhttp.status == 200) {
+                        alert(xhttp.responseText);
+                    } else {
+                        alert('短信发送请求失败');
+                    }
+                }
+            };
+            xhttp.open('POST',@Url.Action("GenerateChangeEmailCode") , true);
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+            xhttp.send(JSON.stringify({ "email": email }));
+        }
+    </script>
 }
