@@ -14,28 +14,33 @@ using Windgram.EventBus;
 using Windgram.Identity.ApplicationCore.Domain.Entities;
 using Windgram.Identity.STS.Extensions;
 using Windgram.Identity.STS.Models.Account;
+using Windgram.Shared.Application.IntegrationEvents;
+using Windgram.Shared.Web.Services;
 
 namespace Windgram.Identity.STS.Controllers
 {
     public class ExternalLoginController : BaseController
     {
         private readonly ILogger _logger;
-        private readonly IStringLocalizer _localizer;
         private readonly IEventBus _eventBus;
+        private readonly IUserContext _userContext;
+        private readonly IStringLocalizer _localizer;
         private readonly UserManager<UserIdentity> _userManager;
         private readonly SignInManager<UserIdentity> _signInManager;
         public ExternalLoginController(
             ILogger<ExternalLoginController> logger,
             IEventBus eventBus,
+            IUserContext userContext,
+            IStringLocalizer<ExternalLoginController> localizer,
             UserManager<UserIdentity> userManager,
-            SignInManager<UserIdentity> signInManager,
-            IStringLocalizer<ExternalLoginController> localizer)
+            SignInManager<UserIdentity> signInManager)
         {
             _logger = logger;
             _eventBus = eventBus;
+            _userContext = userContext;
+            _localizer = localizer;
             _userManager = userManager;
             _signInManager = signInManager;
-            _localizer = localizer;
         }
 
         [HttpGet]
@@ -64,6 +69,11 @@ namespace Windgram.Identity.STS.Controllers
             {
                 return RedirectToAction(nameof(AccountController.Login), "Account");
             }
+            var user = await _userManager.FindByLoginAsync(loginInfo.LoginProvider, loginInfo.ProviderKey);
+            if (user != null)
+            {
+                await _signInManager.UpdateExternalAuthenticationTokensAsync(loginInfo);
+            }
             var result = await _signInManager.ExternalLoginSignInAsync(loginInfo.LoginProvider, loginInfo.ProviderKey, false, true);
             if (result.Succeeded)
             {
@@ -77,7 +87,6 @@ namespace Windgram.Identity.STS.Controllers
             {
                 return RedirectToAction(nameof(AccountController.Lockout), "Account");
             }
-
             // If the user does not have an account, then ask the user to create an account.
             ViewData["ReturnUrl"] = returnUrl;
             ViewData["LoginProvider"] = loginInfo.LoginProvider;
@@ -104,18 +113,42 @@ namespace Windgram.Identity.STS.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByLoginAsync(loginInfo.LoginProvider, loginInfo.ProviderKey);
-                if (user == null)
+                if (user == null) // Bind external Login
                 {
-                    return View("LoginFailure");
+                    user = await _userManager.FindByEmailAsync(model.Email);
+                    if (user == null)
+                    {
+                        ModelState.AddModelError(nameof(model.Email), "");
+                    }
+                    else
+                    {
+                        var verified = await _userManager.VerifyUserTokenAsync(user, TokenOptions.DefaultEmailProvider, UserIdentity.VerifyUserEmailTokenPurpose, model.Code);
+                        if (verified)
+                        {
+                            var addResult = await _userManager.AddLoginAsync(user, loginInfo);
+                            if (!addResult.Succeeded)
+                            {
+                                AddIdentityErrors(addResult);
+                            }
+                        }
+                        else
+                        {
+                            ModelState.AddModelError(nameof(model.Code), "Invaild verify code");
+                        }
+                    }
                 }
-                var result = await _userManager.ChangeEmailAsync(user, model.Email, model.Code);
-                if (result.Succeeded)
+                else // Confirm email
                 {
+                    var verified = await _userManager.ConfirmEmailAsync(user, model.Code);
+                    if (!verified.Succeeded)
+                        ModelState.AddModelError(nameof(model.Code), "Invaild verify code");
+                }
+                if (ModelState.IsValid)
+                {
+                    await _signInManager.UpdateExternalAuthenticationTokensAsync(loginInfo);
                     await _signInManager.SignInAsync(user, isPersistent: false);
-
                     return RedirectToLocal(returnUrl);
                 }
-                AddIdentityErrors(result);
             }
             ViewData["ReturnUrl"] = returnUrl;
 
@@ -123,8 +156,8 @@ namespace Windgram.Identity.STS.Controllers
         }
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> GenerateChangeEmailCode(ExternalLoginBindEmailViewModel model)
+       // [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GenerateEmailVerifyCode([FromBody]ExternalLoginBindEmailViewModel model)
         {
             // Get the information about the user from the external login provider
             var loginInfo = await _signInManager.GetExternalLoginInfoAsync();
@@ -134,32 +167,38 @@ namespace Windgram.Identity.STS.Controllers
             }
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByLoginAsync(loginInfo.LoginProvider, loginInfo.ProviderKey);
+                var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user == null)
                 {
-                    ModelState.AddModelError("", "LoginFailure");
+                    user = await CreateUser(loginInfo, model.Email);
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    _logger.LogInformation($"Email confirmation code {code}");
+                    await _eventBus.Publish(new SendEmailIntegrationEvent
+                    {
+                        Body = $"感谢注册，您的验证码是：{code}",
+                        IpAddress = _userContext.IpAddress,
+                        IsBodyHtml = true,
+                        Subject = "邮箱验证 - Windgram",
+                        To = user.Email
+                    });
                 }
                 else
                 {
-                    var code = await _userManager.GenerateChangeEmailTokenAsync(user, model.Email);
-                    _logger.LogInformation("Email Authenticator code");
+                    var code = await _userManager.GenerateUserTokenAsync(user, TokenOptions.DefaultEmailProvider, UserIdentity.VerifyUserEmailTokenPurpose);
+                    _logger.LogInformation($"Email authenticator code is {code}");
+                    await _eventBus.Publish(new SendEmailIntegrationEvent
+                    {
+                        Body = $"您的账号正在绑定外部登录，验证码：{code}",
+                        IpAddress = _userContext.IpAddress,
+                        IsBodyHtml = true,
+                        Subject = "邮箱验证 - Windgram",
+                        To = user.Email
+                    });
                 }
             }
             return BadRequest(ModelState);
         }
-
-        private async Task SignInWithTokens(UserIdentity user, ExternalLoginInfo loginInfo)
-        {
-            var result = await _signInManager.UpdateExternalAuthenticationTokensAsync(loginInfo);
-            if (!result.Succeeded)
-                throw new Exception(result.Errors.First().Description);
-
-            var props = new AuthenticationProperties();
-            props.StoreTokens(loginInfo.AuthenticationTokens);
-            props.IsPersistent = true;
-            await _signInManager.SignInAsync(user, props);
-        }
-        private async Task<UserIdentity> AutoProvisionUser(ExternalLoginInfo loginInfo)
+        private async Task<UserIdentity> CreateUser(ExternalLoginInfo loginInfo, string email)
         {
             var user = await _userManager.FindByLoginAsync(loginInfo.LoginProvider, loginInfo.ProviderKey);
             if (user == null)
@@ -167,17 +206,13 @@ namespace Windgram.Identity.STS.Controllers
                 user = new UserIdentity()
                 {
                     UserName = UserIdentity.GenerateGuidUserName(),
-                    CreatedDateTime = DateTime.Now
+                    CreatedDateTime = DateTime.Now,
+                    Email = email
                 };
                 var userResult = await _userManager.CreateAsync(user);
                 if (!userResult.Succeeded)
                     throw new Exception(userResult.Errors.First().Description);
                 var filtered = new List<Claim>();
-                var email = loginInfo.Principal.FindFirstValue(JwtClaimTypes.Email) ?? loginInfo.Principal.FindFirstValue(ClaimTypes.Email);
-                if (!email.IsNullOrEmpty())
-                {
-                    filtered.Add(new Claim(JwtClaimTypes.Email, email));
-                }
                 var nickName = loginInfo.Principal.FindFirstValue(JwtClaimTypes.NickName) ??
                     loginInfo.Principal.FindFirstValue(JwtClaimTypes.Name) ??
                     loginInfo.Principal.FindFirstValue(ClaimTypes.Name);
@@ -186,7 +221,6 @@ namespace Windgram.Identity.STS.Controllers
                 {
                     filtered.Add(new Claim(JwtClaimTypes.NickName, nickName));
                 }
-
                 var pictureUrl = loginInfo.Principal.FindFirstValue(JwtClaimTypes.Picture);
                 if (!pictureUrl.IsNullOrEmpty())
                 {

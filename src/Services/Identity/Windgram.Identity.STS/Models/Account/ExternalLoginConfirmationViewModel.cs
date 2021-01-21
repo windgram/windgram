@@ -12,8 +12,8 @@ namespace Windgram.Identity.STS.Models.Account
     }
     public class ExternalLoginBindEmailViewModel
     {
-        [Required]
-        [EmailAddress]
+        // [Required]
+        //[EmailAddress]
         public string Email { get; set; }
     }
 }
