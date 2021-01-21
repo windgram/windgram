@@ -25,6 +25,7 @@ using System.Security.Claims;
 using System.Net.Http.Headers;
 using System.Net.Http;
 using System.Text.Json;
+using IdentityModel;
 
 namespace Windgram.Identity.Web.Extensions
 {
@@ -190,6 +191,7 @@ namespace Windgram.Identity.Web.Extensions
                       o.ClaimActions.MapJsonKey("urn:github:name", "name");
                       o.ClaimActions.MapJsonKey(ClaimTypes.Email, "email", ClaimValueTypes.Email);
                       o.ClaimActions.MapJsonKey("urn:github:url", "url");
+                      o.ClaimActions.MapJsonKey(JwtClaimTypes.Picture, "avatar_url");
                       o.Events = new OAuthEvents
                       {
                           OnCreatingTicket = async context =>

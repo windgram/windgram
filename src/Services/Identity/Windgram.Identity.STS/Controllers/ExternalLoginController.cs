@@ -156,8 +156,8 @@ namespace Windgram.Identity.STS.Controllers
         }
         [HttpPost]
         [AllowAnonymous]
-       // [ValidateAntiForgeryToken]
-        public async Task<IActionResult> GenerateEmailVerifyCode([FromBody]ExternalLoginBindEmailViewModel model)
+        // [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GenerateEmailVerifyCode([FromBody] ExternalLoginBindEmailViewModel model)
         {
             // Get the information about the user from the external login provider
             var loginInfo = await _signInManager.GetExternalLoginInfoAsync();
