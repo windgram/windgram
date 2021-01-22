@@ -2,6 +2,8 @@
 using AutoMapper;
 using FluentValidation;
 using MediatR;
+using Windgram.Identity.ApplicationCore.Queries;
+using Windgram.Caching;
 
 namespace Windgram.Identity.ApplicationCore
 {
@@ -14,6 +16,7 @@ namespace Windgram.Identity.ApplicationCore
             services.AddValidatorsFromAssembly(assembly);
             services.AddAutoMapper(assembly);
 
+            services.AddScoped<IUserQueries>(sp => new UserQueries(connectionString, sp.GetService<ICacheManager>()));
             return services;
         }
     }

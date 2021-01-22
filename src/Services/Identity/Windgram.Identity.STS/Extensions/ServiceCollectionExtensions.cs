@@ -141,6 +141,7 @@ namespace Windgram.Identity.Web.Extensions
              })
              .AddAspNetIdentity<UserIdentity>()
              .AddProfileService<UserProfileService>();
+
             if (environment.IsDevelopment())
             {
                 identityBuilder.AddDeveloperSigningCredential();

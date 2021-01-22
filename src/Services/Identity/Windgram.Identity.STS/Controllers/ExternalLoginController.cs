@@ -226,7 +226,6 @@ namespace Windgram.Identity.STS.Controllers
                 {
                     filtered.Add(new Claim(JwtClaimTypes.Picture, pictureUrl));
                 }
-
                 var claimsResult = await _userManager.AddClaimsAsync(user, filtered);
                 if (!claimsResult.Succeeded)
                     throw new Exception(claimsResult.Errors.First().Description);

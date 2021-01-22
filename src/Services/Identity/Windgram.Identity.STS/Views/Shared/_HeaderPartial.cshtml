@@ -1,8 +1,15 @@
 ﻿@using Microsoft.AspNetCore.Identity;
+@using Microsoft.AspNetCore.Mvc.Localization
 @using Windgram.Identity.ApplicationCore.Domain.Entities;
 
+@inject IViewLocalizer Localizer
 @inject SignInManager<UserIdentity> SignInManager
 @inject UserManager<UserIdentity> UserManager
+@{
+
+    var avatarUrl = User.FindFirst(IdentityModel.JwtClaimTypes.Picture)?.Value;
+    var displayName = User.FindFirst(IdentityModel.JwtClaimTypes.NickName)?.Value ?? User.Identity.Name;
+}
 <header>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm  navbar-dark bg-primary mb-3">
         <div class="container">
@@ -14,36 +21,29 @@
             <div class="collapse navbar-collapse mr-auto" id="navigationBar">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="/">首页</a>
+                        <a class="nav-link active" asp-action="Index" asp-controller="Home">@Localizer["Home"]</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" asp-action="Index" asp-controller="Profile">@Localizer["Profile"]</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" asp-action="Index" asp-controller="Security">@Localizer["Security"]</a>
                     </li>
                 </ul>
-                @if (SignInManager.IsSignedIn(User))
-                {
-                    var avatarUrl = User.FindFirst(IdentityModel.JwtClaimTypes.Picture)?.Value;
-                    var displayName = User.FindFirst(IdentityModel.JwtClaimTypes.NickName)?.Value ?? User.Identity.Name;
-                    <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                @if (!string.IsNullOrEmpty(avatarUrl))
-                                {
-                                    <img src="@avatarUrl" style="height:2rem;width:auto;border-radius:50%" />
-                                }
-                                @displayName
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" asp-action="Index" asp-controller="Home">个人中心</a>
-                                <a class="dropdown-item" asp-action="Logout" asp-controller="Account">退出登录</a>
-                            </div>
-                        </li>
-                    </ul>
-                }
-                else
-                {
-                    <ul class="navbar-nav">
-                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Register" asp-action="Index">注册</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Login" asp-action="Index">登录</a></li>
-                    </ul>
-                }
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            @if (!string.IsNullOrEmpty(avatarUrl))
+                            {
+                                <img src="@avatarUrl" style="height:2rem;width:auto;border-radius:50%" />
+                            }
+                            @displayName
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" asp-action="Logout" asp-controller="Account">@Localizer["Logout"]</a>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>

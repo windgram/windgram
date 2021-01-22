@@ -1,9 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import { UserProfileViewModel, UserProfileDto } from '../models/user-profile.model';
-import { StorageService } from './storage.service';
 
 const USER_URL = `http://localhost:5501/api/profile`;
 @Injectable()
@@ -11,8 +9,7 @@ export class UserService {
   private userLoadedSource = new Subject<UserProfileViewModel>();
   public userLoaded = this.userLoadedSource.asObservable();
   constructor(
-    private httpClient: HttpClient,
-    private storageService: StorageService
+    private httpClient: HttpClient
   ) { }
 
   loadUser() {

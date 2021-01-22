@@ -30,12 +30,10 @@
             </li>
             <li nz-submenu [nzTitle]="avatar">
               <ng-template #avatar>
-                <ng-container *ngIf="profile.picture; else noPictureTemplate">
+                <ng-container *ngIf="profile.picture">
                   <nz-avatar [nzSrc]="profile.picture" [nzSize]="'default'"></nz-avatar>
                 </ng-container>
-                <ng-template #noPictureTemplate>
-                  {{ profile.nickName ? profile.nickName : profile.userName }}
-                </ng-template>
+                {{ profile.nickname ? profile.nickname : profile.name }}
               </ng-template>
               <ul>
                 <li nz-menu-item [routerLink]="['/settings']">
@@ -53,6 +51,9 @@
                 </li>
                 <li nz-menu-divider></li>
                 <li nz-menu-item (click)="logout()">
+                  Sign out
+                </li>
+                <li nz-menu-item (click)="load()">
                   Sign out
                 </li>
               </ul>

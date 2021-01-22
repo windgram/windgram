@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Windgram.Identity.ApplicationCore.Queries;
+using Windgram.Identity.ApplicationCore.ViewModels.Identity;
 using Windgram.Shared.Web.Services;
 
 namespace Windgram.Identity.API.Controllers
@@ -11,19 +13,21 @@ namespace Windgram.Identity.API.Controllers
     public class ProfileController : BaseController
     {
         private readonly IUserContext _userContext;
-        public ProfileController(IUserContext userContext)
+        private readonly IUserQueries _userQueries;
+        public ProfileController(
+            IUserContext userContext,
+            IUserQueries userQueries)
         {
             _userContext = userContext;
+            _userQueries = userQueries;
         }
         [HttpGet]
-        public IActionResult Get()
+        public async Task<ActionResult<UserProfileViewModel>> Get()
         {
-            return Ok(new
-            {
-                EmailAddress = _userContext.EmailAddress,
-                IpAddress = _userContext.IpAddress,
-                UserId = _userContext.UserId
-            });
+            var vm = await _userQueries.GetUserProfileById(_userContext.UserId);
+            if (vm == null)
+                return NotFound();
+            return Ok(vm);
         }
     }
 }

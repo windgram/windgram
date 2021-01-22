@@ -1,12 +1,13 @@
 export interface UserProfileViewModel {
-  userName: string;
+  sub: string;
   email: string;
+  name: string;
+  nickname: string;
   picture: string;
-  nickName: string;
   gender: string;
   birthDate: string;
-  bio: string;
-  location: string;
+  zoneinfo: string;
+  updated_at: string;
 }
 
 export interface UserProfileDto {
