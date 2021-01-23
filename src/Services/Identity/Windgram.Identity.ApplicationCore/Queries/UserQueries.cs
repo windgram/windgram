@@ -19,32 +19,33 @@ namespace Windgram.Identity.ApplicationCore.Queries
             _connectionStrings = connectionStrings;
             _cacheManager = cacheManager;
         }
-
-        public async Task<UserProfileViewModel> GetUserProfileById(string id)
+        public async Task<UserViewModel> GetUserById(string id)
         {
-            return await _cacheManager.GetOrCreateAsync(UserIdentity.GetProfileById(id), () => this.LoadUserProfileById(id));
+            return await _cacheManager.GetOrCreateAsync(UserIdentity.GetById(id), () => this.LoadUserById(id));
         }
-
-        private async Task<UserProfileViewModel> LoadUserProfileById(string id)
+        public async Task<UserClaimsViewModel> GetUserClaimsById(string id)
+        {
+            return await _cacheManager.GetOrCreateAsync(UserIdentity.GetClaimsById(id), () => this.LoadUserClaimsById(id));
+        }
+        private async Task<UserViewModel> LoadUserById(string id)
         {
             using (var connection = new MySqlConnection(_connectionStrings))
             {
                 await connection.OpenAsync();
 
-                var rawSql = $@"SELECT * FROM {IdentityTableDefaults.Schema}_{IdentityTableDefaults.User} WHERE Id = @id";
-                var user = await connection.QueryFirstOrDefaultAsync<UserIdentity>(rawSql, new { id });
-                if (user == null)
-                    return null;
+                var rawSql = $@"SELECT Id,UserName,Email,PhoneNumber,CreatedDateTime FROM {IdentityTableDefaults.Schema}_{IdentityTableDefaults.User} WHERE Id = @id";
+                return await connection.QueryFirstOrDefaultAsync<UserViewModel>(rawSql, new { id });
+            }
+        }
+        private async Task<UserClaimsViewModel> LoadUserClaimsById(string id)
+        {
+            using (var connection = new MySqlConnection(_connectionStrings))
+            {
+                await connection.OpenAsync();
                 var userClaims = await connection.QueryAsync<UserIdentityUserClaim>(
                     $"SELECT * FROM {IdentityTableDefaults.Schema}_{IdentityTableDefaults.UserClaim} WHERE UserId = @userId",
                     new { userId = id });
-                return new UserProfileViewModel(userClaims)
-                {
-                    Email = user.Email,
-                    Id = user.Id,
-                    UserName = user.UserName,
-                    CreatedDateTime = user.CreatedDateTime
-                };
+                return new UserClaimsViewModel(userClaims);
             }
         }
     }

@@ -1,0 +1,73 @@
+﻿@model Windgram.Identity.ApplicationCore.ViewModels.Identity.UserClaimsViewModel
+@inject IViewLocalizer Localizer
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@{ ViewData["Title"] = Localizer["Title"];}
+
+
+<h3>
+    @Localizer["Title"]
+</h3>
+<p class="text-muted">
+    @Localizer["Description"]
+</p>
+
+@await Html.PartialAsync("_ValidationSummary")
+
+@await Html.PartialAsync("_StatusMessage", ViewData["StatusMessage"])
+<div class="row">
+    <div class="col-sm-12 col-md-10 col-lg-7 col-xl-5">
+        <form asp-action="Index">
+            <div class="form-group">
+                <label asp-for="Picture" class="control-label">@Localizer["Picture"]</label>
+                <input asp-for="Picture" class="form-control" />
+                <span asp-validation-for="Picture" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NickName" class="control-label">@Localizer["NickName"]</label>
+                <input asp-for="NickName" class="form-control" />
+                <span asp-validation-for="NickName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BirthDate" class="control-label">@Localizer["BirthDate"]</label>
+                <input asp-for="BirthDate" class="form-control" type="date" />
+                <span asp-validation-for="BirthDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Gender" class="control-label">@Localizer["Gender"]</label>
+                <div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input asp-for="Gender" type="radio" id="genderSecrecy" name="Gender" class="custom-control-input" value="secrecy">
+                        <label class="custom-control-label" for="genderSecrecy">@Localizer["Secrecy"]</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input asp-for="Gender" type="radio" id="genderFemale" name="Gender" class="custom-control-input" value="female">
+                        <label class="custom-control-label" for="genderFemale">@Localizer["Female"]</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input asp-for="Gender" type="radio" id="genderMale" name="Gender" class="custom-control-input" value="male">
+                        <label class="custom-control-label" for="genderMale">@Localizer["Male"]</label>
+                    </div>
+                </div>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Bio" class="control-label">@Localizer["Bio"]</label>
+                <textarea asp-for="Bio" class="form-control"></textarea>
+                <span asp-validation-for="Bio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ZoneInfo" class="control-label">@Localizer["ZoneInfo"]</label>
+                <input asp-for="ZoneInfo" class="form-control" />
+                <span asp-validation-for="ZoneInfo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">@Localizer["Submit"]</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

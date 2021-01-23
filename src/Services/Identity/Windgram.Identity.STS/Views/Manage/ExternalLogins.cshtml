@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Windgram.Identity.STS.Models.Manage.UserLoginInfoViewModel>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{ ViewData["Title"] = Localizer["Title"];}
+
+
+<h3>
+    @Localizer["Title"]
+</h3>
+<p class="text-muted">
+    @Localizer["Description"]
+</p>
+<p>
+    <a asp-action="Create">@Localizer["Create"]</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Localizer["ProviderDisplayName"]
+            </th>
+            <th>
+                @Localizer["ProviderKey"]
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProviderDisplayName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProviderKey)
+                </td>
+                <td>
+                    <a asp-action="Delete" asp-route.provider="@item.LoginProvider">@Localizer["Delete"]</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

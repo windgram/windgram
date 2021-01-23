@@ -13,4 +13,8 @@
     <ProjectReference Include="..\..\..\BuildingBlocks\Shared\Windgram.Shared.Application\Windgram.Shared.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="IntegrationEvents\EventsHandling\" />
+  </ItemGroup>
+
 </Project>

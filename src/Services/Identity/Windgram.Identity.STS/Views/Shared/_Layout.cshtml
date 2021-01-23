@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<!DOCTYPE html>
 
 <html lang="zh-cn">
 <head>
@@ -7,11 +10,26 @@
     <title>@ViewData["Title"] - Windgram</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.min.css" />
+    @RenderSection("Styles", required: false)
 </head>
 <body>
     <partial name="_HeaderPartial" />
     <div class="container">
-        @RenderBody()
+        <main role="main" class="pb-3">
+            <div class="row">
+                <div class="col-sm-12 col-md-4 col-lg-3 col-xl-2">
+                    <div class="nav flex-column nav-pills">
+                        <a class="nav-link" asp-controller="Manage" asp-action="Profile">@Localizer["Profile"]</a>
+                        <a class="nav-link" asp-controller="Manage" asp-action="Index">@Localizer["Account"]</a>
+                        <a class="nav-link" asp-controller="Manage" asp-action="ChangePassword">@Localizer["ChangePassword"]</a>
+                        <a class="nav-link" asp-controller="Manage" asp-action="ExternalLogins">@Localizer["ExternalLogins"]</a>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-8 col-lg-9 col-xl-10">
+                    @RenderBody()
+                </div>
+            </div>
+        </main>
     </div>
     <partial name="_FooterPartial" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

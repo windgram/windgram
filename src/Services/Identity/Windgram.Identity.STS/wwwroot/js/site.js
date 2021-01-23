@@ -18,3 +18,37 @@ function getCookie(cname) {
     }
     return "";
 }
+
+function sendEmailCode(button, email, url, resendText) {
+    if (!email) {
+        return;
+    }
+    button.setAttribute('disabled', 'true');
+    let countingDown = 60;
+    var interval = setInterval(() => {
+        countingDown--;
+        button.innerText = countingDown + 's';
+        if (countingDown === 0) {
+            button.removeAttribute('disabled');
+            button.innerText = resendText;
+            clearInterval(interval);
+        }
+    }, 1000);
+    requestSendCode(email, url);
+}
+
+function requestSendCode(email, url) {
+    var csrfToken = getCookie("CSRF-TOKEN");
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (xhttp.readyState == XMLHttpRequest.DONE) {
+            if (xhttp.status != 200) {
+                alert('Error:Send code!');
+            }
+        }
+    };
+    xhttp.open('POST', url, true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+    xhttp.send(JSON.stringify({ "email": email }));
+}

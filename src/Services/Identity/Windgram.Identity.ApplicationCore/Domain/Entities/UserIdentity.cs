@@ -7,7 +7,8 @@ namespace Windgram.Identity.ApplicationCore.Domain.Entities
     public class UserIdentity : IdentityUser, IEntity
     {
         public const string VerifyUserEmailTokenPurpose = "VerifyUserEmailToken";
-        public static string GetProfileById(string userId) => $"user_profile_id_{userId}";
+        public static string GetById(string userId) => $"user_id_{userId}";
+        public static string GetClaimsById(string userId) => $"user_claims_userid_{userId}";
         public DateTime CreatedDateTime { get; set; }
         public DateTime? LastModifiedDateTime { get; set; }
         public static string GenerateGuidUserName() => Guid.NewGuid().ToString("N");

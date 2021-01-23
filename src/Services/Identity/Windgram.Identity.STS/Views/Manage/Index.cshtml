@@ -1,0 +1,59 @@
+﻿@model Windgram.Identity.ApplicationCore.ViewModels.Identity.UserViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{ ViewData["Title"] = Localizer["Title"];}
+@section Styles{
+    <link rel="stylesheet" href="~/css/manage/index.min.css" />
+}
+@await Html.PartialAsync("_StatusMessage", ViewData["StatusMessage"])
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">
+            @Localizer["Title"]
+        </h5>
+        <p class="card-text">
+            @Localizer["Description"]
+        </p>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="personal-info">
+                    <label class="text-muted">
+                        @Localizer["UserName"]
+                    </label>
+                    @Html.DisplayFor(model => model.UserName)
+                </div>
+                <small>
+                    <a asp-action="UserName">@Localizer["Change"]</a>
+                </small>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="personal-info">
+                    <label class="text-muted">
+                        @Localizer["Email"]
+                    </label>
+                    @Html.DisplayFor(model => model.Email)
+                </div>
+                <small>
+                    <a asp-action="Email">@Localizer["Change"]</a>
+                </small>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="personal-info">
+                    <label class="text-muted">
+                        @Localizer["PhoneNumber"]
+                    </label>
+                    @Html.DisplayFor(model => model.PhoneNumber)
+                </div>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="personal-info">
+                    <label class="text-muted">
+                        @Localizer["CreatedDateTime"]
+                    </label>
+                    @Html.DisplayFor(model => model.CreatedDateTime)
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

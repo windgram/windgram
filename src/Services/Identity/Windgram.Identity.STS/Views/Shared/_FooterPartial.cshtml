@@ -1,4 +1,19 @@
-﻿
+﻿@using Microsoft.AspNetCore.Builder
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Options
+
+@inject IViewLocalizer Localizer
+@inject IOptions<RequestLocalizationOptions> LocOptions
+
+@{
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    var cultureItems = LocOptions.Value.SupportedUICultures
+        .Select(c => new SelectListItem { Value = c.Name, Text = c.DisplayName })
+        .ToList();
+    var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}";
+}
+
 <footer class="footer mt-1">
     <div class="container">
         <div class="row">
@@ -9,7 +24,13 @@
                 Made with <span class="text-danger">❤</span> by leo · Free Forever
             </div>
             <div class="col-12 text-center">
-                &copy;@DateTime.Now.Year 
+                @foreach (var culture in cultureItems)
+                {
+                    <a asp-action="SetLanguage" asp-controller="Home" asp-route-returnUrl="@returnUrl" asp-route-culture="@culture.Value">@culture.Text</a>
+                }
+            </div>
+            <div class="col-12 text-center"> 
+               Windgram &copy;@DateTime.Now.Year
             </div>
         </div>
     </div>

@@ -1,0 +1,51 @@
+﻿@model Windgram.Identity.STS.Models.Manage.ChangeEmailViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{ ViewData["Title"] = Localizer["Title"];}
+
+
+<h3>
+    @Localizer["Title"]
+</h3>
+<p class="text-muted">
+    @Localizer["Description", ViewData["CurrentEmail"]]
+</p>
+
+@await Html.PartialAsync("_ValidationSummary")
+
+@await Html.PartialAsync("_StatusMessage", ViewData["StatusMessage"])
+
+<div class="row">
+    <div class="col-sm-12 col-md-10 col-lg-7 col-xl-5">
+        <form asp-action="Email">
+            <div class="form-group">
+                <label asp-for="Email" class="control-label">@Localizer["NewEmail"]</label>
+                <div class="input-group mb-3">
+                    <input asp-for="Email" class="form-control" />
+                    <button type="button" onclick="send(this)" class="btn btn-outline-secondary">@Localizer["SendCode"]</button>
+                </div>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Code" class="control-label">@Localizer["Code"]</label>
+                <input asp-for="Code" class="form-control" />
+                <span asp-validation-for="Code" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">@Localizer["Submit"]</button>
+                <a asp-action="Index" class="btn btn-link">@Localizer["Back"]</a>
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts {
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        function send(button) {
+            sendEmailCode(button, document.getElementById('Email').value,
+                '@Url.Action("GenerateEmailVerifyCode")','@Localizer["ResendCode"]');
+        }
+    </script>
+}

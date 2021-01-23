@@ -21,7 +21,7 @@
         <label asp-for="Email" class="control-label">@Localizer["Email"]</label>
         <div class="input-group mb-3">
             <input asp-for="Email" class="form-control" />
-            <button type="button" onclick="sendCode(this)" class="btn btn-outline-secondary">@Localizer["SendCode"]</button>
+            <button type="button" onclick="send(this)" class="btn btn-outline-secondary">@Localizer["SendCode"]</button>
         </div>
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>
@@ -38,35 +38,9 @@
 
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script type="text/javascript">
-        function sendCode(button) {
-            console.log(button);
-                button.setAttribute('disabled', 'true');
-                let countingDown = 60;
-                var interval = setInterval(() => {
-                    countingDown--;
-                    button.innerText = countingDown + 's';
-                    if (countingDown === 0) {
-                        button.removeAttribute('disabled');
-                        button.innerText = '@Localizer["ResendCode"]';
-                        clearInterval(interval);
-                    }
-                }, 1000);
-                requestSendCode(document.getElementById('Email').value);
-        }
-        function requestSendCode(email) {
-            var csrfToken = getCookie("CSRF-TOKEN");
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-                if (xhttp.readyState == XMLHttpRequest.DONE) {
-                    if (xhttp.status != 200) {
-                        alert('@Localizer["SendCodeFailed"]');
-                    }
-                }
-            };
-            xhttp.open('POST','@Url.Action("GenerateEmailVerifyCode")' , true);
-            xhttp.setRequestHeader("Content-type", "application/json");
-            xhttp.setRequestHeader("X-CSRF-TOKEN", csrfToken);
-            xhttp.send(JSON.stringify({ "email": email }));
+        function send(button) {
+            sendEmailCode(button, document.getElementById('Email').value,
+                '@Url.Action("GenerateEmailVerifyCode")','@Localizer["ResendCode"]');
         }
     </script>
 }

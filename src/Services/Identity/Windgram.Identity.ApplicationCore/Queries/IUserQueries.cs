@@ -5,6 +5,7 @@ namespace Windgram.Identity.ApplicationCore.Queries
 {
     public interface IUserQueries
     {
-        Task<UserProfileViewModel> GetUserProfileById(string id);
+        Task<UserViewModel> GetUserById(string id);
+        Task<UserClaimsViewModel> GetUserClaimsById(string id);
     }
 }

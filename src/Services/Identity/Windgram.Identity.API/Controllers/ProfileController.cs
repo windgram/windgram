@@ -22,9 +22,9 @@ namespace Windgram.Identity.API.Controllers
             _userQueries = userQueries;
         }
         [HttpGet]
-        public async Task<ActionResult<UserProfileViewModel>> Get()
+        public async Task<ActionResult<UserClaimsViewModel>> Get()
         {
-            var vm = await _userQueries.GetUserProfileById(_userContext.UserId);
+            var vm = await _userQueries.GetUserClaimsById(_userContext.UserId);
             if (vm == null)
                 return NotFound();
             return Ok(vm);

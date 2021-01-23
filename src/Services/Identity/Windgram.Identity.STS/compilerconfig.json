@@ -1,0 +1,10 @@
+﻿[
+  {
+    "outputFile": "wwwroot/css/manage/index.css",
+    "inputFile": "wwwroot/css/manage/index.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/site.css",
+    "inputFile": "wwwroot/css/site.scss"
+  }
+]
