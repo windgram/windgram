@@ -8,6 +8,8 @@ export const environment = {
   clientId: 'portal_spa_client',
   clientRoot: 'http://localhost:4200',
   clientScope: 'openid profile filesystem message user',
+  userUrl: 'http://localhost:5503',
+  bloggingUrl: 'http://localhost:5504',
 };
 
 /*

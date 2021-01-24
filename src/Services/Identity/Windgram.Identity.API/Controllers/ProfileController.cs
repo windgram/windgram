@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Windgram.Identity.API.ViewModels.Profile;
 using Windgram.Identity.ApplicationCore.Queries;
-using Windgram.Identity.ApplicationCore.ViewModels.Identity;
 using Windgram.Shared.Web.Services;
 
 namespace Windgram.Identity.API.Controllers
@@ -22,12 +18,22 @@ namespace Windgram.Identity.API.Controllers
             _userQueries = userQueries;
         }
         [HttpGet]
-        public async Task<ActionResult<UserClaimsViewModel>> Get()
+        public async Task<ActionResult<UserProfileViewModel>> Get()
         {
-            var vm = await _userQueries.GetUserClaimsById(_userContext.UserId);
-            if (vm == null)
-                return NotFound();
-            return Ok(vm);
+            var user = await _userQueries.GetUserById(_userContext.UserId);
+            if (user == null)
+                return NoContent();
+            var claims = await _userQueries.GetUserClaimsById(_userContext.UserId);
+
+            return Ok(new UserProfileViewModel
+            {
+                CreatedDateTime = user.CreatedDateTime,
+                Email = user.Email,
+                Id = user.Id,
+                PhoneNumber = user.PhoneNumber,
+                Profile = claims,
+                UserName = user.UserName
+            });
         }
     }
 }

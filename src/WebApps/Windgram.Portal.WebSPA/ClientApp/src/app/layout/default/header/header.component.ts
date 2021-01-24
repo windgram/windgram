@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { UserProfileViewModel } from 'src/app/core/models/profile.model';
 import { AuthService } from 'src/app/core/services/auth.service';
-import { UserService } from 'src/app/core/services/user.service';
+import { ProfileService } from 'src/app/core/services/profile.service';
 
 @Component({
   selector: 'app-layout-default-header',
@@ -9,11 +9,10 @@ import { UserService } from 'src/app/core/services/user.service';
   styleUrls: ['./header.component.scss']
 })
 export class LayoutDefaultHeaderComponent implements OnInit {
-  profile: any;
+  user: UserProfileViewModel;
   constructor(
-    private router: Router,
     private authService: AuthService,
-    private userService: UserService
+    private profileService: ProfileService
   ) { }
 
   ngOnInit() {
@@ -21,12 +20,12 @@ export class LayoutDefaultHeaderComponent implements OnInit {
   }
 
   load() {
-    this.userService.getUser()
+    this.profileService.get()
       .subscribe(res => {
-        this.profile = res;
-        console.log(res);
+        this.user = res;
       });
   }
+
   login() {
     this.authService.login()
       .then(() => {
@@ -39,5 +38,9 @@ export class LayoutDefaultHeaderComponent implements OnInit {
       .then(() => {
 
       });
+  }
+
+  goProfile() {
+    this.authService.goProfile();
   }
 }

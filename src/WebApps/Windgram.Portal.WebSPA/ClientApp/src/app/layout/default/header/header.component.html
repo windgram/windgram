@@ -13,7 +13,7 @@
           </div> -->
         </div>
         <ul nz-menu nzMode="horizontal">
-          <ng-container *ngIf="!profile">
+          <ng-container *ngIf="!user;else loggedInTemplate">
             <li nz-menu-item (click)="login()">
               登录
             </li>
@@ -21,7 +21,7 @@
               注册
             </li>
           </ng-container>
-          <ng-container *ngIf="profile">
+          <ng-template #loggedInTemplate>
             <li nz-menu-item [routerLink]="['/posts','new']">
               <i style="font-size:x-large;vertical-align: middle;" nz-icon nzType="edit" nzTheme="outline"></i>
             </li>
@@ -30,13 +30,13 @@
             </li>
             <li nz-submenu [nzTitle]="avatar">
               <ng-template #avatar>
-                <ng-container *ngIf="profile.picture">
-                  <nz-avatar [nzSrc]="profile.picture" [nzSize]="'default'"></nz-avatar>
+                <ng-container *ngIf="user.profile?.picture">
+                  <nz-avatar [nzSrc]="user.profile?.picture" [nzSize]="'default'"></nz-avatar>
                 </ng-container>
-                {{ profile.nickname ? profile.nickname : profile.name }}
+                {{ user.profile?.nickname ? user.profile?.nickname : user.userName }}
               </ng-template>
               <ul>
-                <li nz-menu-item [routerLink]="['/settings']">
+                <li nz-menu-item (click)="goProfile()">
                   Your Profile
                 </li>
                 <li nz-menu-divider></li>
@@ -58,7 +58,7 @@
                 </li>
               </ul>
             </li>
-          </ng-container>
+          </ng-template>
         </ul>
       </nav>
     </nz-col>

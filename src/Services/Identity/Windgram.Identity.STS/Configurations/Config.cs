@@ -14,6 +14,7 @@ namespace Windgram.Identity.STS.Configurations
                 new ApiScope("filesystem", "FileSystem Service"),
                 new ApiScope("message", "Message Service"),
                 new ApiScope("user", "User Service"),
+                new ApiScope("blogging", "Blogging Service"),
             };
         }
 
@@ -48,7 +49,8 @@ namespace Windgram.Identity.STS.Configurations
                         IdentityServerConstants.StandardScopes.Profile,
                         "filesystem",
                         "message",
-                        "user"
+                        "user",
+                        "blogging"
                     },
                 }
             };

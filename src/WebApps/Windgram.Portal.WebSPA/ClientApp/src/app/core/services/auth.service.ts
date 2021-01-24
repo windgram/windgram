@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
 import { User, UserManager, UserManagerSettings } from 'oidc-client';
-import { from, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class AuthService {
   userStoreKeys = `oidc.user:${environment.stsAuthority}:${environment.clientId}`;
   userManager: UserManager;
@@ -46,5 +43,9 @@ export class AuthService {
 
   logout(): Promise<void> {
     return this.userManager.signoutRedirect();
+  }
+
+  goProfile() {
+    location.href = `${environment.stsAuthority}/manage/profile`;
   }
 }
