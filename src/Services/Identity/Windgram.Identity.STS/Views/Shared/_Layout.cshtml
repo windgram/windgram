@@ -13,9 +13,9 @@
     @RenderSection("Styles", required: false)
 </head>
 <body>
-    <partial name="_HeaderPartial" />
-    <div class="container">
-        <main role="main" class="pb-3">
+    <main role="main" class="pb-3">
+        <partial name="_HeaderPartial" />
+        <div class="container">
             <div class="row">
                 <div class="col-sm-12 col-md-4 col-lg-3 col-xl-2">
                     <div class="nav flex-column nav-pills">
@@ -29,8 +29,8 @@
                     @RenderBody()
                 </div>
             </div>
-        </main>
-    </div>
+        </div>
+    </main>
     <partial name="_FooterPartial" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>

@@ -7,16 +7,19 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 </head>
 <body>
-    <div class="container">
-        <div class="row">
-            <div class="m-auto col-sm-12 col-md-8 col-lg-6 col-xl-4">
-                <div class="logo-text mb-1 text-center">
-                    Windgram
+
+    <main role="main" class="pb-3">
+        <div class="container">
+            <div class="row">
+                <div class="m-auto col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                    <div class="logo-text mb-1 text-center">
+                        Windgram
+                    </div>
+                    @RenderBody()
                 </div>
-                @RenderBody()
             </div>
         </div>
-    </div>
+    </main>
     <partial name="_FooterPartial" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
