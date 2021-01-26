@@ -10,6 +10,7 @@ export const environment = {
   clientScope: 'openid profile filesystem message user',
   userUrl: 'http://localhost:5503',
   bloggingUrl: 'http://localhost:5504',
+  tinymcePath: '/assets/tinymce'
 };
 
 /*

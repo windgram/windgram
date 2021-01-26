@@ -4,9 +4,7 @@ import { environment } from 'src/environments/environment';
 import { PostDto, PostQueryModel, PostViewModel } from './posts.model';
 
 const POSTS_URL = `${environment.bloggingUrl}/api/posts`;
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class PostsService {
 
   constructor(

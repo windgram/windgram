@@ -4,6 +4,7 @@ import { AuthGuard } from './auth-guard';
 import { StorageService } from './services/storage.service';
 import { ProfileService } from './services/profile.service';
 import { AuthService } from './services/auth.service';
+import { JsLoaderService } from './services/js-loader.service';
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import { AuthService } from './services/auth.service';
     AuthGuard,
     AuthService,
     StorageService,
-    ProfileService
+    ProfileService,
+    JsLoaderService
   ]
 })
 export class CoreModule { }

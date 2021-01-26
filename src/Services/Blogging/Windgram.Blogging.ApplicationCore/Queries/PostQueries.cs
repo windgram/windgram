@@ -49,7 +49,6 @@ namespace Windgram.Blogging.ApplicationCore.Queries
             var model = new PostViewModel
             {
                 Tags = new List<string>(),
-                BlogId = result.BlogId,
                 CoverFileId = result.CoverFileId,
                 CreatedBy = result.CreatedBy,
                 CreatedDateTime = result.CreatedDateTime,

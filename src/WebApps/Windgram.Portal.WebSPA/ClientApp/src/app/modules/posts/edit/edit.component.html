@@ -1,0 +1,47 @@
+<form *ngIf="form" nz-form [nzLayout]="'horizontal'" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <nz-form-item>
+    <nz-form-label [nzXs]="24" [nzMd]="6" [nzLg]="5" [nzXl]="4" [nzXXl]="3" nzFor="title">标题</nz-form-label>
+    <nz-form-control [nzXs]="24" [nzMd]="14" [nzLg]="12" [nzXl]="10" [nzXXl]="8" [nzErrorTip]="'长度需要在 1 - 64 个字符之间'">
+      <input type="text" nz-input formControlName="title">
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzXs]="24" [nzMd]="6" [nzLg]="5" [nzXl]="4" [nzXXl]="3" nzFor="description">概述</nz-form-label>
+    <nz-form-control [nzXs]="24" [nzMd]="14" [nzLg]="12" [nzXl]="10" [nzXXl]="8" [nzErrorTip]="'长度不能超过256个字符'">
+      <textarea nz-input formControlName="description"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzXs]="24" [nzMd]="6" [nzLg]="5" [nzXl]="4" [nzXXl]="3" nzFor="slug">Slug</nz-form-label>
+    <nz-form-control [nzXs]="24" [nzMd]="14" [nzLg]="12" [nzXl]="10" [nzXXl]="8" [nzErrorTip]="'长度需要在 2 - 64 个字符之间'">
+      <input type="text" nz-input formControlName="slug">
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzXs]="24" [nzMd]="6" [nzLg]="5" [nzXl]="4" [nzXXl]="3" nzFor="slug">分类</nz-form-label>
+    <nz-form-control [nzXs]="24" [nzMd]="14" [nzLg]="12" [nzXl]="10" [nzXXl]="8" [nzErrorTip]="'长度需要在 2 - 64 个字符之间'">
+      <nz-select formControlName="tags" [nzPlaceHolder]="'文章标签'" nzAllowClear="true" nzMode="multiple">
+        <nz-option [nzLabel]="'未分类'" [nzValue]="'未分类'"></nz-option>
+        <nz-option [nzLabel]="'.NET'" [nzValue]="'.NET'"></nz-option>
+        <nz-option [nzLabel]="'T-SQL'" [nzValue]="'T-SQL'"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <ng-container formGroupName="postContent">
+    <nz-form-item>
+      <nz-form-label [nzXs]="24" [nzMd]="6" [nzLg]="5" [nzXl]="4" [nzXXl]="3" nzFor="htmlContent">正文</nz-form-label>
+      <nz-form-control [nzXs]="24" [nzMd]="18" [nzLg]="19" [nzXl]="20" [nzXXl]="20" [nzErrorTip]="'正文内容不能超过40960个字符'">
+        <tinymce-editor [config]="tinymceConfig" formControlName="htmlContent" [placeholder]="'请输入正文内容'">
+        </tinymce-editor>
+      </nz-form-control>
+    </nz-form-item>
+  </ng-container>
+  <nz-form-item>
+    <nz-col [nzXs]="24" [nzMd]="6" [nzLg]="5" [nzXl]="4" [nzXXl]="3"></nz-col>
+    <nz-form-control>
+      <button type="submit" nz-button nzType="primary" [nzLoading]="posting"
+        [disabled]="form.invalid || posting">确定</button>
+      <button type="button" nz-button nzType="link" [routerLink]="['/post','list']">返回列表</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

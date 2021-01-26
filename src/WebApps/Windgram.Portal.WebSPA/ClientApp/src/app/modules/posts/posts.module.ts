@@ -1,11 +1,22 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { PostsComponent } from './posts.component';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { TinymceModule } from '../tinymce/tinymce.module';
+import { POSTS_ROUTED_COMCOMPONENTS, PostsRoutingModule } from './posts-routing.module';
+import { PostsService } from './shared/posts.service';
 
 @NgModule({
   imports: [
-    CommonModule
+    SharedModule,
+    NzSelectModule,
+    TinymceModule,
+    PostsRoutingModule
   ],
-  declarations: [PostsComponent]
+  declarations: [
+    POSTS_ROUTED_COMCOMPONENTS
+  ],
+  providers: [
+    PostsService
+  ]
 })
 export class PostsModule { }

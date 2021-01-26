@@ -13,6 +13,10 @@ const routes: Routes = [
         loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
       },
       {
+        path: 'post',
+        loadChildren: () => import('./posts/posts.module').then(m => m.PostsModule)
+      },
+      {
         path: 'page-not-found',
         loadChildren: () => import('./not-found/not-found.module').then(m => m.NotFoundModule)
       },
